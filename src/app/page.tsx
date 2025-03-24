@@ -26,23 +26,23 @@ const Td = ({
   );
 };
 
-const Tr = ({
-  children,
-  className,
-  data,
-}: {
-  children: ReactNode;
-  className: string;
-  data: FiiData;
-}) => {
+const Tr = ({ data }: { data: FiiData }) => {
   return (
     <tr className="border-b-2 border-gray-300">
-      <Td className="w-1/8">{data.ticker}</Td>
-      <Td className="w-1/8">{data.dy}</Td>
-      <Td className="w-1/8">{data.dy12m}</Td>
-      <Td className="w-1/8">{data.report}</Td>
-      <Td className="w-1/4">{data.relevant}</Td>
-      <Td className="w-1/4">{data.news}</Td>
+      <Td className="w-[10%]">{data.ticker.toUpperCase()}</Td>
+      <Td className="w-[10%]">{data.dy}</Td>
+      <Td className="w-[10%]">{data.dy12m}</Td>
+      <Td className="w-[10%]">
+        <a href={data.report} target="_blank">
+          Link
+        </a>
+      </Td>
+      <Td className="w-[10%]">
+        <a href={data.relevant} target="_blank">
+          Link
+        </a>
+      </Td>
+      <Td className="w-1/2">{data.news}</Td>
     </tr>
   );
 };
@@ -51,16 +51,39 @@ const Thead = () => {
   return (
     <thead>
       <tr className="border-b-2 border-gray-300">
-        <th className="w-1/8 border-r-2 border-gray-300 p-2">a</th>
-        <th className="w-1/8 border-r-2 border-gray-300 p-2">b</th>
-        <th className="w-1/8 border-r-2 border-gray-300 p-2">c</th>
-        <th className="w-1/8 border-r-2 border-gray-300 p-2">d</th>
-        <th className="w-1/4 border-r-2 border-gray-300 p-2">e</th>
-        <th className="w-1/4 border-l-2 border-gray-300 p-2">f</th>
+        <th className="w-[10%] border-r-2 border-gray-300 p-2">Ticker</th>
+        <th className="w-[10%] border-r-2 border-gray-300 p-2">DY</th>
+        <th className="w-[10%] border-r-2 border-gray-300 p-2">DY 12m</th>
+        <th className="w-[10%] border-r-2 border-gray-300 p-2">
+          Relatório gerencial
+        </th>
+        <th className="w-[10%] border-r-2 border-gray-300 p-2">
+          Fatos Relevantes
+        </th>
+        <th className="w-1/2 border-l-2 border-gray-300 p-2">Notícias</th>
       </tr>
     </thead>
   );
 };
+
+const fiiList: FiiData[] = [
+  {
+    ticker: "cpts11",
+    dy: "1.12",
+    dy12m: "1.05",
+    report: "https://www.clubefii.com.br/fiis/CPTS11",
+    relevant: "https://www.clubefii.com.br/fiis/CPTS11",
+    news: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis corporis, neque quas adipisci nihil perferendis illo minima architecto aperiam hic aspernatur magnam excepturi commodi maxime quasi culpa dicta ut repellat.",
+  },
+  {
+    ticker: "cpts11",
+    dy: "1.12",
+    dy12m: "1.05",
+    report: "https://www.clubefii.com.br/fiis/CPTS11",
+    relevant: "https://www.clubefii.com.br/fiis/CPTS11",
+    news: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis corporis, neque quas adipisci nihil perferendis illo minima architecto aperiam hic aspernatur magnam excepturi commodi maxime quasi culpa dicta ut repellat.",
+  },
+];
 
 export default function Home() {
   return (
@@ -76,32 +99,9 @@ export default function Home() {
         <table className="w-full">
           <Thead />
           <tbody>
-            <tr>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">aaa</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">bbb</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">ccc</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">dddd</td>
-              <td className="w-1/4 border-r-2 border-gray-300 p-2">eeee</td>
-              <td className="w-1/4 border-l-2 border-gray-300 p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Blanditiis corporis, neque quas adipisci nihil perferendis illo
-                minima architecto aperiam hic aspernatur magnam excepturi
-                commodi maxime quasi culpa dicta ut repellat.
-              </td>
-            </tr>
-            <tr>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">aaa</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">bbb</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">ccc</td>
-              <td className="w-1/8 border-r-2 border-gray-300 p-2">dddd</td>
-              <td className="w-1/4 border-r-2 border-gray-300 p-2">eeee</td>
-              <td className="w-1/4 border-l-2 border-gray-300 p-2">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Blanditiis corporis, neque quas adipisci nihil perferendis illo
-                minima architecto aperiam hic aspernatur magnam excepturi
-                commodi maxime quasi culpa dicta ut repellat.
-              </td>
-            </tr>
+            {fiiList.map((fii, index) => {
+              return <Tr key={index} data={fii} />;
+            })}
           </tbody>
         </table>
       </div>

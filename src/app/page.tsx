@@ -1,5 +1,8 @@
+"use client";
+
 import { ReactNode } from "react";
 import clsx from "clsx";
+import { useAllFiis } from "@/hooks/useAllFiis";
 
 interface FiiData {
   ticker: string;
@@ -86,15 +89,21 @@ const fiiList: FiiData[] = [
 ];
 
 export default function Home() {
+  const { data: tickers, error, isLoading } = useAllFiis();
+
+  console.log({ tickers, error, isLoading });
+
   return (
     <div className="w-full flex justify-center items-start">
-      <div className="w-[calc(16.5vw)] mx-4 h-fit flex flex-col border-[1px] border-gray-300 rounded-2xl p-2">
-        <p>CPTS11</p>
-        <p>CPTS11</p>
-        <p>CPTS11</p>
-        <p>CPTS11</p>
-        <p>CPTS11</p>
-      </div>
+      {!tickers ? (
+        <div className="w-[calc(16.5vw)] mx-4 h-screen border-[1px] border-gray-300 rounded-2xl p-2 animate-pulse bg-sky-300" />
+      ) : (
+        <div className="w-[calc(16.5vw)] mx-4 h-fit flex flex-col border-[1px] border-gray-300 rounded-2xl p-2">
+          {tickers.map((ticker) => (
+            <p key={ticker}>{ticker}</p>
+          ))}
+        </div>
+      )}
       <div className="min-w-2/3 min-h-screen py-1">
         <table className="w-full">
           <Thead />

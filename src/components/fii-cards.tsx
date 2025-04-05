@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { ReactNode } from "react";
+import Link from "next/link";
 
 interface FiiData {
   ticker: string;
@@ -9,62 +10,6 @@ interface FiiData {
   relevant: string;
   news: string;
 }
-
-const Td = ({
-  children,
-  className,
-}: {
-  children?: ReactNode;
-  className?: string;
-}) => {
-  return (
-    <td
-      className={clsx("border-r-2 border-t-2 border-gray-300 p-2", className)}
-    >
-      {children}
-    </td>
-  );
-};
-
-const Tr = ({ data }: { data: FiiData }) => {
-  return (
-    <tr className="border-b-2 border-gray-300">
-      <Td className="w-[10%]">{data.ticker.toUpperCase()}</Td>
-      <Td className="w-[10%]">{data.dy}</Td>
-      <Td className="w-[10%]">{data.dy12m}</Td>
-      <Td className="w-[10%]">
-        <a href={data.report} target="_blank">
-          Link
-        </a>
-      </Td>
-      <Td className="w-[10%]">
-        <a href={data.relevant} target="_blank">
-          Link
-        </a>
-      </Td>
-      <Td className="w-1/2">{data.news}</Td>
-    </tr>
-  );
-};
-
-const Thead = () => {
-  return (
-    <thead>
-      <tr className="border-b-2 border-gray-300">
-        <th className="w-[10%] border-r-2 border-gray-300 p-2">Ticker</th>
-        <th className="w-[10%] border-r-2 border-gray-300 p-2">DY</th>
-        <th className="w-[10%] border-r-2 border-gray-300 p-2">DY 12m</th>
-        <th className="w-[10%] border-r-2 border-gray-300 p-2">
-          Relatório gerencial
-        </th>
-        <th className="w-[10%] border-r-2 border-gray-300 p-2">
-          Fatos Relevantes
-        </th>
-        <th className="w-1/2 border-l-2 border-gray-300 p-2">Notícias</th>
-      </tr>
-    </thead>
-  );
-};
 
 const fiiList: FiiData[] = [
   {
@@ -85,17 +30,44 @@ const fiiList: FiiData[] = [
   },
 ];
 
+const LinkCard = ({ text, link }: { text: string; link: string }) => {
+  return (
+    <Link href={link} target="_blank">
+      <div className="flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl font-bold text-white transition-all shadow-md">
+        {text}
+      </div>
+    </Link>
+  );
+};
+
+const FiiCard = ({ ticker, dy, dy12m, report, relevant, news }: FiiData) => {
+  return (
+    <div className="w-full flex flex-col rounded-3xl p-4 gap-3 bg-gray-200 shadow-md border-[1px] border-gray-300 shadow-gray-300">
+      <span className="font-bold text-2xl">{ticker.toUpperCase()}</span>
+      <div className="flex justify-between">
+        <div className="flex flex-col">
+          <span>Yield</span>
+          <span className="text-lg font-bold text-gray-700">{dy}%</span>
+        </div>
+        <div className="flex flex-col">
+          <span>{"Yield (12M)"}</span>
+          <span className="text-lg font-bold text-gray-700">{dy12m}%</span>
+        </div>
+        <LinkCard text=" Acessar relatório" link={report} />
+        <LinkCard text="Acessar fato relevante" link={relevant} />
+      </div>
+      <span className="mb-[-12px] font-bold text-gray-700">Notícias:</span>
+      <p>{news}</p>
+    </div>
+  );
+};
+
 export const FiiCards = ({ tickers }: { tickers: string[] }) => {
   return (
-    <div className="w-full min-h-screen py-1">
-      <table className="w-full">
-        <Thead />
-        <tbody>
-          {tickers.map((ticker, index) => {
-            return <Tr key={ticker} data={fiiList[0]} />;
-          })}
-        </tbody>
-      </table>
+    <div className="w-full min-h-screen py-1 flex flex-col gap-4">
+      {tickers.map((ticker, index) => {
+        return <FiiCard {...fiiList[0]}></FiiCard>;
+      })}
     </div>
   );
 };

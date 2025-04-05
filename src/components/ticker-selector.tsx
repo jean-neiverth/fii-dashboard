@@ -71,7 +71,7 @@ export const TickerSelector = ({
               <input
                 type="checkbox"
                 checked={selectedTickers.includes(ticker)}
-                onClick={(e) => e.stopPropagation()} // Prevent double-triggering
+                onClick={() => {}} // Prevent double-triggering
                 onChange={() => {}} // React requires onChange with checked prop
                 className="cursor-pointer"
               />

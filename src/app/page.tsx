@@ -1,8 +1,10 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import clsx from "clsx";
 import { useAllFiis } from "@/hooks/useAllFiis";
+
+import { getTickers, addTicker, removeTicker } from "@/utils/storage";
 
 interface FiiData {
   ticker: string;
@@ -89,9 +91,24 @@ const fiiList: FiiData[] = [
 ];
 
 export default function Home() {
-  const { data: tickers, error, isLoading } = useAllFiis();
+  const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
+  const { data: tickers } = useAllFiis();
 
-  console.log({ tickers, error, isLoading });
+  useEffect(() => {
+    setSelectedTickers(getTickers());
+  }, []);
+
+  const handleTickerClick = (ticker: string) => {
+    console.log({ ticker });
+    if (selectedTickers.includes(ticker)) {
+      removeTicker(ticker);
+      const newTickers = selectedTickers.filter((item) => item !== ticker);
+      setSelectedTickers(newTickers);
+    } else {
+      addTicker(ticker);
+      setSelectedTickers((tickers) => [...tickers, ticker]);
+    }
+  };
 
   return (
     <div className="w-full flex justify-center items-start">
@@ -100,16 +117,28 @@ export default function Home() {
       ) : (
         <div className="w-[calc(16.5vw)] mx-4 h-fit flex flex-col border-[1px] border-gray-300 rounded-2xl p-2">
           {tickers.map((ticker) => (
-            <p key={ticker}>{ticker}</p>
+            <div
+              key={ticker}
+              onClick={() => handleTickerClick(ticker)}
+              className="flex gap-2 py-[2px] hover:cursor-pointer hover:font-bold"
+            >
+              <input
+                type="checkbox"
+                readOnly
+                checked={selectedTickers.includes(ticker)}
+                onSelect={(e) => console.log(e)}
+              />
+              <span className="select-none">{ticker}</span>
+            </div>
           ))}
         </div>
       )}
-      <div className="min-w-2/3 min-h-screen py-1">
+      <div className="w-full min-h-screen py-1">
         <table className="w-full">
           <Thead />
           <tbody>
-            {fiiList.map((fii, index) => {
-              return <Tr key={index} data={fii} />;
+            {selectedTickers.map((ticker, index) => {
+              return <Tr key={ticker} data={fiiList[0]} />;
             })}
           </tbody>
         </table>

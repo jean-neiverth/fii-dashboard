@@ -8,7 +8,7 @@ const getTwoDaysAgoFormatted = (): string => {
   const today = new Date();
   // Create a new date by setting the month to one less than current
   const twoDaysAgo = new Date(today);
-  twoDaysAgo.setDate(today.getDate() - 2);
+  twoDaysAgo.setDate(today.getDate() - 3);
 
   const year = twoDaysAgo.getFullYear();
   const month = String(twoDaysAgo.getMonth() + 1).padStart(2, "0");

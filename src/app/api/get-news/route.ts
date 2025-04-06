@@ -4,10 +4,25 @@ export const dynamic = "force-dynamic"; // Disable caching for this route
 
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
 
-async function getNews() {
+const getTwoDaysAgoFormatted = (): string => {
+  const today = new Date();
+  // Create a new date by setting the month to one less than current
+  const twoDaysAgo = new Date(today);
+  twoDaysAgo.setDate(today.getDate() - 2);
+
+  const year = twoDaysAgo.getFullYear();
+  const month = String(twoDaysAgo.getMonth() + 1).padStart(2, "0");
+  const day = String(twoDaysAgo.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+async function getNews(ticker: string) {
   try {
+    const twoDaysAgo = getTwoDaysAgoFormatted();
+
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=cpts11&from=2025-03-06&sortBy=popularity&apiKey=${NEWS_API_KEY}`,
+      `https://newsapi.org/v2/everything?q=${ticker}&from=${twoDaysAgo}&sortBy=popularity&apiKey=${NEWS_API_KEY}`,
       {
         method: "GET",
         headers: {
@@ -32,9 +47,23 @@ async function getNews() {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const news = await getNews();
+    // Get the URL from the request
+    const { searchParams } = new URL(request.url);
+
+    // Get the ticker parameter from the URL
+    const ticker = searchParams.get("ticker");
+
+    // If no ticker is provided, return an error
+    if (!ticker) {
+      return NextResponse.json(
+        { error: "Ticker parameter is required" },
+        { status: 400 }
+      );
+    }
+
+    const news = await getNews(ticker);
     return NextResponse.json(news);
   } catch (error) {
     console.error("API route error:", error);

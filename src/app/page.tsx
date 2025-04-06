@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import clsx from "clsx";
 import { useAllFiis } from "@/hooks/useAllFiis";
 
-import { getTickers, addTicker, removeTicker } from "@/utils/storage";
+import { getTickers } from "@/utils/storage/selected-tickers";
 import { TickerSelector } from "@/components/ticker-selector";
 import { FiiCards } from "@/components/fii-cards";
 

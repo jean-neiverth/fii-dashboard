@@ -1,4 +1,4 @@
-import { addTicker, removeTicker } from "@/utils/storage";
+import { addTicker, removeTicker } from "@/utils/storage/selected-tickers";
 import { Dispatch, SetStateAction, useState, useMemo } from "react";
 
 export const TickerSelector = ({

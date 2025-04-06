@@ -4,13 +4,7 @@ import { FiiData } from "../types";
 
 const FIIS_DATA_KEY = "fii-dashboard@v1/fiis-data";
 
-export interface FiiCache {
-  ticker: string;
-  lastTimestamp: number;
-  data: FiiData;
-}
-
-export type FiisCache = FiiCache[];
+export type FiisCache = FiiData[];
 
 export const getFiisCache = (): FiisCache => {
   const fiis = localStorage.getItem(FIIS_DATA_KEY);
@@ -19,7 +13,7 @@ export const getFiisCache = (): FiisCache => {
   return JSON.parse(fiis) as FiisCache;
 };
 
-export const getFiiCache = (ticker: string): FiiCache | null => {
+export const getFiiCache = (ticker: string): FiiData | null => {
   const fiis = localStorage.getItem(FIIS_DATA_KEY);
 
   if (!fiis) return null;
@@ -32,7 +26,7 @@ export const getFiiCache = (ticker: string): FiiCache | null => {
   return fii;
 };
 
-export const addFiiCache = (fiiCache: FiiCache) => {
+export const addFiiCache = (fiiCache: FiiData) => {
   const currentFiisCache = getFiisCache();
 
   if (currentFiisCache.length === 0) {

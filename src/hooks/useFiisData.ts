@@ -1,17 +1,41 @@
+import { fetchFiiData } from "@/utils/fetch-fii-data";
+import { addFiiCache, getFiisCache } from "@/utils/storage/fiis-data";
 import useSWR from "swr";
 
-export function useFiisData(fiis: string[]) {
+export function useFiisData(tickers: string[]) {
   const fetcher = async () => {
-    const fiisData = await Promise.all(
-      fiis.map((ticker) => fetch(`/api/get-fii?ticker=${ticker}`))
-    );
+    // 1. Get current cached fiis data
+    const cachedFiis = getFiisCache();
 
-    return (await Promise.all(fiisData.map((response) => response.json()))).map(
-      (fii) => fii.documents
+    // 2. Label cached fiis data with (timestamp less than 20 hours ago || not present in current cache) as to-fetch
+    const okFiisData = cachedFiis.filter(
+      (fii) => !(fii.timestampMs < Date.now() - 1000 * 60 * 60 * 20)
     );
+    const staledCachedTickers = cachedFiis
+      .filter((fii) => fii.timestampMs < Date.now() - 1000 * 60 * 60 * 20)
+      .map((fii) => fii.ticker);
+    const missingTickers = tickers.filter(
+      (ticker) => !cachedFiis.map((fii) => fii.ticker).includes(ticker)
+    );
+    const toFetchTickers = [...staledCachedTickers, ...missingTickers];
+
+    // 3. Fetch to-fetch fiis
+    const newFiisData = (
+      await Promise.all(toFetchTickers.map((ticker) => fetchFiiData(ticker)))
+    ).filter((fii) => fii !== null);
+
+    // 4. Store the newly read ones in localStorage
+    for (const fiiData of newFiisData) {
+      addFiiCache(fiiData);
+    }
+
+    // 5. Merge previous not stale and new data
+    const finalFiis = [...okFiisData, ...newFiisData];
+
+    return finalFiis;
   };
 
-  return useSWR(fiis, fetcher, {
+  return useSWR(tickers, fetcher, {
     revalidateIfStale: false,
     refreshInterval: 0,
     revalidateOnFocus: false,

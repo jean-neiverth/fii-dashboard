@@ -30,8 +30,8 @@ interface FiiRawData {
  * Interface for the parsed result
  */
 interface FiiParsedData {
-  dy: number | null;
-  dy12m: number | null;
+  dy: string | null;
+  dy12m: string | null;
   relevant: string | null;
   relevantDaysGap: number | null;
   report: string | null;
@@ -88,7 +88,7 @@ export function parseFiiData(data: FiiRawData | null): FiiParsedData {
   // Get latest rendimento document for dy
   const latestRendimento = rendimentoDocuments[0];
   if (latestRendimento && latestRendimento.dy) {
-    result.dy = parseFloat(latestRendimento.dy) || null;
+    result.dy = parseFloat(latestRendimento.dy).toFixed(2) || null;
 
     // Calculate dy12m (mean of all dy values)
     if (rendimentoDocuments.length > 0) {
@@ -97,8 +97,9 @@ export function parseFiiData(data: FiiRawData | null): FiiParsedData {
         .filter((val) => !isNaN(val));
 
       if (dyValues.length > 0) {
-        result.dy12m =
-          dyValues.reduce((sum, value) => sum + value, 0) / dyValues.length;
+        result.dy12m = (
+          dyValues.reduce((sum, value) => sum + value, 0) / dyValues.length
+        ).toFixed(2);
       }
     }
   }

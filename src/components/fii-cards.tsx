@@ -1,35 +1,97 @@
 import Link from "next/link";
 import { FiiData } from "@/utils/types";
 
-const LinkCard = ({ text, link }: { text: string; link: string }) => {
+const getDaysText = (x: number) => {
+  if (x < 1) return "Hoje";
+  if (x === 1) return "1 dia atrás";
+  return `${x} dias atrás`;
+};
+
+const LinkCard = ({
+  text,
+  subtext,
+  link,
+  nullText,
+}: {
+  text: string;
+  subtext: string;
+  link: string | null;
+  nullText: string;
+}) => {
   return (
-    <Link href={link} target="_blank">
-      <div className="flex items-center justify-center px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl font-bold text-white transition-all shadow-md">
-        {text}
-      </div>
-    </Link>
+    <>
+      {link ? (
+        <Link href={link} target="_blank">
+          <div className="flex flex-col items-center justify-center h-12 w-40 bg-green-500 hover:bg-green-600 rounded-xl text-white transition-all shadow-md text-center">
+            <p className="font-bold text-lg">{text}</p>
+            {subtext && (
+              <p className="mt-[-4px] font-normal text-sm">{subtext}</p>
+            )}
+          </div>
+        </Link>
+      ) : (
+        <div className="flex items-center justify-center h-12 w-40 bg-gray-500 rounded-xl font-bold text-gray-300 shadow-md cursor-not-allowed opacity-50">
+          {nullText}
+        </div>
+      )}
+    </>
   );
 };
 
-const FiiCard = ({ ticker, dy, dy12m, report, relevant, news }: FiiData) => {
+const FiiCard = ({
+  ticker,
+  dy,
+  dy12m,
+  report,
+  reportDaysGap,
+  relevant,
+  relevantDaysGap,
+  news,
+}: FiiData) => {
   return (
     <div className="w-full flex flex-col rounded-3xl p-4 gap-3 bg-gray-200 shadow-md border-[1px] border-gray-300 shadow-gray-300">
-      <span className="font-bold text-2xl">{ticker.toUpperCase()}</span>
+      <Link
+        href={`https://fiis.com.br/${ticker}`}
+        target="_blank"
+        className="p-[2.75px] hover:p-0 font-bold text-2xl cursor-pointer hover:text-green-600 hover:text-[28px] transition-all w-30"
+      >
+        <span>{ticker.toUpperCase()}</span>
+      </Link>
       <div className="flex justify-between">
         <div className="flex flex-col">
-          <span>Yield</span>
-          <span className="text-lg font-bold text-gray-700">{dy}%</span>
+          <span className="cursor-default">Yield</span>
+          <span className="text-lg font-bold text-gray-700 cursor-default">
+            {dy}%
+          </span>
         </div>
         <div className="flex flex-col">
-          <span>{"Yield (12M)"}</span>
-          <span className="text-lg font-bold text-gray-700">{dy12m}%</span>
+          <span className="cursor-default">{"Yield (12M)"}</span>
+          <span className="text-lg font-bold text-gray-700 cursor-default">
+            {dy12m}%
+          </span>
         </div>
-        {report && <LinkCard text=" Acessar relatório" link={report} />}
-        {relevant && <LinkCard text="Acessar fato relevante" link={relevant} />}
+        <LinkCard
+          text="Relatório"
+          subtext={reportDaysGap ? getDaysText(reportDaysGap) : ""}
+          nullText="Sem relatório"
+          link={report}
+        />
+        <LinkCard
+          text="Fato Relevante"
+          subtext={relevantDaysGap ? getDaysText(relevantDaysGap) : ""}
+          nullText="Sem fato relevante"
+          link={relevant}
+        />
       </div>
-      <span className="mb-[-12px] font-bold text-gray-700">Notícias:</span>
+      {news.length > 0 && (
+        <span className="mb-[-12px] font-bold text-gray-700">Notícias:</span>
+      )}
       {news.map((n) => (
-        <p key={n.url}>{n.title}</p>
+        <Link href={n.url} key={n.url} target="_blank">
+          <p className="cursor-pointer hover:underline transition-all">
+            {n.title}
+          </p>
+        </Link>
       ))}
     </div>
   );

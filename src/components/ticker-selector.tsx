@@ -47,7 +47,7 @@ export const TickerSelector = ({
     );
 
   return (
-    <div className="w-[calc(16.5vw)] mx-4 h-fit flex flex-col border-[1px] border-gray-300 rounded-2xl p-2">
+    <div className="w-[calc(16.5vw)] mr-4 h-fit flex flex-col border-[1px] border-gray-300 rounded-2xl p-2">
       {/* Search input */}
       <div className="mb-3 sticky top-0">
         <input

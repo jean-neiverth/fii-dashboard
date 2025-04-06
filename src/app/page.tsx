@@ -20,7 +20,7 @@ export default function Home() {
   const { data: fiisData } = useFiisData(selectedTickers);
 
   return (
-    <div className="w-full flex justify-center items-start">
+    <div className="w-full flex justify-between items-start gap-10">
       <TickerSelector
         tickers={tickers}
         selectedTickers={selectedTickers}

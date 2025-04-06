@@ -39,7 +39,9 @@ async function getNews(ticker: string) {
 
     const data = await response.json();
 
-    if (data) return { news: data };
+    const articles = data.articles;
+
+    if (data) return { news: articles };
     return { ok: true };
   } catch (error) {
     console.error("Error:", error);

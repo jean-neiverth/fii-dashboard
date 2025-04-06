@@ -45,9 +45,9 @@ export async function getFii(ticker: string) {
 
     const documents = JSON.parse(await response.json());
 
-    const parsedDocuments = parseFiiData({ documents });
+    const parsedDocuments = { ticker, ...parseFiiData({ documents }) };
 
-    if (parsedDocuments) return { parsedDocuments };
+    if (parsedDocuments) return { documents: parsedDocuments };
     return { ok: true };
   } catch (error) {
     console.error("Error:", error);

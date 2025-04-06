@@ -97,7 +97,13 @@ const FiiCard = ({
   );
 };
 
-export const FiiCards = ({ fiisData }: { fiisData: FiiData[] | undefined }) => {
+export const FiiCards = ({
+  fiisData,
+  isLoading,
+}: {
+  fiisData: FiiData[] | undefined;
+  isLoading: boolean;
+}) => {
   return (
     <div className="w-full min-h-screen py-1 flex flex-col gap-4">
       {fiisData &&
@@ -106,6 +112,9 @@ export const FiiCards = ({ fiisData }: { fiisData: FiiData[] | undefined }) => {
             <FiiCard key={`fii-card-${fiiData.ticker}`} {...fiiData}></FiiCard>
           );
         })}
+      {isLoading && (
+        <div className="w-full flex flex-col rounded-3xl h-28 animate-pulse bg-gray-200 shadow-md border-[1px] border-gray-300 shadow-gray-300" />
+      )}
     </div>
   );
 };

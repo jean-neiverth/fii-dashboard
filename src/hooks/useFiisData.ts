@@ -1,5 +1,7 @@
 import { fetchFiiData } from "@/utils/fetch-fii-data";
 import { addFiiCache, getFiisCache } from "@/utils/storage/fiis-data";
+import { FiiData } from "@/utils/types";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 export function useFiisData(tickers: string[]) {
@@ -30,14 +32,26 @@ export function useFiisData(tickers: string[]) {
     }
 
     // 5. Merge previous not stale and new data
-    const finalFiis = [...okFiisData, ...newFiisData];
+    const finalFiis = [...okFiisData, ...newFiisData].filter((fii) =>
+      tickers.includes(fii.ticker)
+    );
 
     return finalFiis;
   };
 
-  return useSWR(tickers, fetcher, {
+  const [oldData, setOldData] = useState<FiiData[]>([]);
+
+  const { data: newData, isLoading } = useSWR(tickers, fetcher, {
     revalidateIfStale: false,
     refreshInterval: 0,
     revalidateOnFocus: false,
   });
+
+  useEffect(() => {
+    if (newData) setOldData(newData);
+  }, [newData]);
+
+  const data = newData ?? oldData;
+
+  return { data, isLoading };
 }

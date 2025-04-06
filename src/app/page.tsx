@@ -17,7 +17,7 @@ export default function Home() {
     setSelectedTickers(getTickers());
   }, []);
 
-  const { data: fiisData } = useFiisData(selectedTickers);
+  const { data: fiisData, isLoading } = useFiisData(selectedTickers);
 
   return (
     <div className="w-full flex justify-between items-start gap-10">
@@ -26,7 +26,7 @@ export default function Home() {
         selectedTickers={selectedTickers}
         setSelectedTickers={setSelectedTickers}
       />
-      <FiiCards fiisData={fiisData} />
+      <FiiCards fiisData={fiisData} isLoading={isLoading} />
     </div>
   );
 }

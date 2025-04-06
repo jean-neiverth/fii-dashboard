@@ -155,7 +155,3 @@ function calculateDaysDifference(
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 }
-
-// Example usage:
-// const result = parseFiiData(data);
-// console.log(result);

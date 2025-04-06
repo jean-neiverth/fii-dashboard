@@ -19,7 +19,6 @@ export const TickerSelector = ({
   const tickersClustered = [...selectedTickers, ...unSelectedTickers];
 
   const handleTickerClick = (ticker: string) => {
-    console.log({ ticker });
     if (selectedTickers.includes(ticker)) {
       removeTicker(ticker);
       const newTickers = selectedTickers.filter((item) => item !== ticker);

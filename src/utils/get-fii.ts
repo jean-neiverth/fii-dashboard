@@ -1,3 +1,5 @@
+import { parseFiiData } from "./parseDocuments";
+
 const getTodayFormatted = (): string => {
   const today = new Date();
   const year = today.getFullYear();
@@ -8,15 +10,14 @@ const getTodayFormatted = (): string => {
 };
 
 // Get date from 1 month ago in 'yyyy-mm-dd' format
-const getOneMonthAgoFormatted = (): string => {
+const getStartDateFormatted = (): string => {
   const today = new Date();
-  // Create a new date by setting the month to one less than current
-  const oneMonthAgo = new Date(today);
-  oneMonthAgo.setMonth(today.getMonth() - 1);
+  const startDate = new Date(today);
+  startDate.setFullYear(today.getFullYear() - 1);
 
-  const year = oneMonthAgo.getFullYear();
-  const month = String(oneMonthAgo.getMonth() + 1).padStart(2, "0");
-  const day = String(oneMonthAgo.getDate()).padStart(2, "0");
+  const year = startDate.getFullYear();
+  const month = String(startDate.getMonth() + 1).padStart(2, "0");
+  const day = String(startDate.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
 };
@@ -24,10 +25,10 @@ const getOneMonthAgoFormatted = (): string => {
 export async function getFii(ticker: string) {
   try {
     const today = getTodayFormatted();
-    const oneMonthAgo = getOneMonthAgoFormatted();
+    const startDate = getStartDateFormatted();
 
     const response = await fetch(
-      `https://fiis.com.br/wp-json/fiis/v1/updates-ticker?start=${oneMonthAgo}&end=${today}&ticker=${ticker.toUpperCase()}`,
+      `https://fiis.com.br/wp-json/fiis/v1/updates-ticker?start=${startDate}&end=${today}&ticker=${ticker.toUpperCase()}`,
       {
         method: "GET",
         headers: {
@@ -42,9 +43,11 @@ export async function getFii(ticker: string) {
       }
     );
 
-    const fiis = await response.json();
+    const documents = JSON.parse(await response.json());
 
-    if (fiis) return { documents: JSON.parse(fiis) };
+    const parsedDocuments = parseFiiData({ documents });
+
+    if (parsedDocuments) return { parsedDocuments };
     return { ok: true };
   } catch (error) {
     console.error("Error:", error);

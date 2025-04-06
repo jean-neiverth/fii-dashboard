@@ -1,44 +1,22 @@
-import puppeteer from "puppeteer";
-
 export async function getAllFiis() {
-  let browser = null;
-  let fiis = null;
-
   try {
-    browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    const response = await fetch(
+      "https://fiis.com.br/wp-json/fiis/v1/lupa_fiis",
+      {
+        method: "GET",
+        headers: {
+          "x-fiis-nonce": "61495f60b533cc40ad822e054998a3190ea9bca0d94791a1da",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.59",
+          Origin: "https://fiis.com.br",
+          Referer: "https://fiis.com.br/",
+        },
+      }
+    );
 
-    await page.setRequestInterception(true);
-
-    page.on("request", (interceptedRequest) => {
-      if (interceptedRequest.isInterceptResolutionHandled()) return;
-      if (
-        interceptedRequest.url().endsWith(".png") ||
-        interceptedRequest.url().endsWith(".jpg") ||
-        interceptedRequest.url().includes(".css") ||
-        interceptedRequest.url().includes("google-analytics") ||
-        interceptedRequest.url().includes("facebook") ||
-        interceptedRequest.url().includes("doubleclick")
-      )
-        interceptedRequest.abort();
-      else interceptedRequest.continue();
-    });
-
-    page.on("response", async (response) => {
-      try {
-        const url = response.url();
-        if (url && url.includes("fiis.com.br/wp-json")) {
-          fiis = await response.json();
-          page.close();
-        }
-      } catch {}
-    });
-
-    try {
-      await page.goto("https://fiis.com.br/lupa-de-fiis", {
-        waitUntil: "networkidle0",
-      });
-    } catch {}
+    const fiis = await response.json();
 
     if (fiis)
       return {
@@ -50,7 +28,5 @@ export async function getAllFiis() {
   } catch (error) {
     console.error("Error:", error);
     throw error;
-  } finally {
-    if (browser) await browser.close();
   }
 }

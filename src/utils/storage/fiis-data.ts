@@ -2,7 +2,7 @@
 
 import { FiiData } from "../types";
 
-const FIIS_DATA_KEY = "fii-dashboard@v1/fiis-data";
+const FIIS_DATA_KEY = "fii-dashboard@v0.2/fiis-data";
 
 export type FiisCache = FiiData[];
 
@@ -39,6 +39,7 @@ export const addFiiCache = (fiiCache: FiiData) => {
       fii.ticker === fiiCache.ticker ? fiiCache : fii
     );
     localStorage.setItem(FIIS_DATA_KEY, JSON.stringify(updatedCache));
+    return;
   }
 
   localStorage.setItem(

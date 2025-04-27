@@ -1,4 +1,5 @@
 import { fetchFiiData } from "@/utils/fetch-fii-data";
+import { sortFiis } from "@/utils/sortFiis";
 import { addFiiCache, getFiisCache } from "@/utils/storage/fiis-data";
 import { FiiData } from "@/utils/types";
 import { useEffect, useState } from "react";
@@ -36,7 +37,9 @@ export function useFiisData(tickers: string[]) {
       tickers.includes(fii.ticker)
     );
 
-    return finalFiis;
+    const sortedFiis = sortFiis(finalFiis);
+
+    return sortedFiis;
   };
 
   const [oldData, setOldData] = useState<FiiData[]>([]);
